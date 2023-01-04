@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Detail from "./pages/Detail";
 import DetailMovie from "./pages/DetailMovie";
 import Homepage from "./pages/Homepage";
 import ListFavorite from "./pages/ListFavorite";
