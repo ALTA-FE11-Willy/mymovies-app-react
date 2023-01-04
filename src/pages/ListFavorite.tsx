@@ -59,7 +59,7 @@ export default class ListFavorite extends Component {
         <div className="text-center font-bold text-5xl mt-9">
           <p>My Favorite</p>
         </div>
-        <div className="grid grid-cols-4 gap-3 my-9 mx-9">
+        <div className="grid grid-cols-5 gap-4 my-9 mx-28">
           {this.state.loading ? (
             <p>Loading...</p>
           ) : (
