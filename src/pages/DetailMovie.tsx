@@ -3,8 +3,12 @@ import "../styles/Detail.css";
 import axios from "axios";
 
 import Layout from "../components/Layout";
-import { CardDetail, CardNowPlaying } from "../components/Card";
+import Card, { CardDetail } from "../components/Card";
 import { SkeletonLoading } from "../components/Loading";
+import { MovieType } from "../utils/types/movie";
+import { withRouter } from "../utils/navigation";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
 
 interface DatasType {
   id: number;
@@ -25,24 +29,36 @@ interface DataType {
   overview?: string;
   release_date?: string;
   runtime?: number;
-  genres?: GenreType[];
+  genres?: any;
 }
 
-interface PropsType {}
+interface PropsType {
+  params?: any;
+}
+
+export interface VideosType {
+  id?: string;
+  key?: string;
+  name?: string;
+}
 
 interface StateType {
   loading: boolean;
   datas: DatasType[];
   data: DataType;
+  id_movie: number;
+  videos: VideosType[];
 }
 
-export default class Homepage extends Component<PropsType, StateType> {
+class DetailMovie extends Component<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
       data: {},
       datas: [],
       loading: true,
+      id_movie: 0,
+      videos: [],
     };
   }
 
@@ -51,12 +67,13 @@ export default class Homepage extends Component<PropsType, StateType> {
   }
 
   fetchData() {
+    const { id_movie } = this.props.params;
     let nowPlaying = `https://api.themoviedb.org/3/movie/now_playing?api_key=${
       import.meta.env.VITE_API_KEY
     }&language=en-US&page=1`;
-    let selectedMovie = `https://api.themoviedb.org/3/movie/683328?api_key=${
+    let selectedMovie = `https://api.themoviedb.org/3/movie/${id_movie}?api_key=${
       import.meta.env.VITE_API_KEY
-    }&language=en-US`;
+    }&language=en-US&append_to_response=videos`;
 
     const requestNowPlaying = axios.get(nowPlaying);
     const requestSelectedMovie = axios.get(selectedMovie);
@@ -67,9 +84,11 @@ export default class Homepage extends Component<PropsType, StateType> {
         axios.spread((...responses) => {
           const responseNowPlaying = responses[0].data.results;
           const responseSelectedMovie = responses[1].data;
+          const responseSelectedMovieTrailer = responses[1].data.videos.results;
+
           this.setState({ datas: responseNowPlaying });
           this.setState({ data: responseSelectedMovie });
-          console.log(responseSelectedMovie);
+          this.setState({ videos: responseSelectedMovieTrailer });
         })
       )
       .catch((error) => {
@@ -78,6 +97,19 @@ export default class Homepage extends Component<PropsType, StateType> {
       .finally(() => {
         this.setState({ loading: false });
       });
+  }
+
+  handleFavorite(data: MovieType) {
+    const checkExist = localStorage.getItem("FavMovie");
+    if (checkExist) {
+      let parseFav: MovieType[] = JSON.parse(checkExist);
+
+      parseFav.push(data);
+      localStorage.setItem("FavMovie", JSON.stringify(parseFav));
+    } else {
+      localStorage.setItem("FavMovie", JSON.stringify([data]));
+      alert("Movie added to favorite");
+    }
   }
   render() {
     return (
@@ -100,23 +132,40 @@ export default class Homepage extends Component<PropsType, StateType> {
             />
           </div>
         </div>
+        <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
+          {this.state.videos.slice(0, 3).map((data, key) => (
+            <div key={key}>
+              <iframe
+                width="100%"
+                height="415"
+                src={`https://www.youtube.com/embed/${data.key}`}
+                title={data.name}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          ))}
+        </Carousel>
         <div className="text-center font-bold text-5xl mt-9">
           <p>Similar Movie</p>
         </div>
         <div className="grid grid-cols-5 gap-4 my-9 mx-28 ">
           {this.state.loading
             ? [...Array(8).keys()].map((data) => <SkeletonLoading key={data} />)
-            : this.state.datas
-                .slice(0, 10)
-                .map((data) => (
-                  <CardNowPlaying
-                    key={data.id}
-                    title={data.title}
-                    image={data.poster_path}
-                  />
-                ))}
+            : this.state.datas.map((data) => (
+                <Card
+                  key={data.id}
+                  title={data.title}
+                  image={data.poster_path}
+                  id={data.id}
+                  labelButton="ADD TO FAVORITE"
+                  onClickFav={() => this.handleFavorite(data)}
+                />
+              ))}
         </div>
       </Layout>
     );
   }
 }
+
+export default withRouter(DetailMovie);

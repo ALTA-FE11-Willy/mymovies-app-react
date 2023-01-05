@@ -2,57 +2,49 @@ import { Component, useState } from "react";
 import "../styles/ListFavorite.css";
 
 import Layout from "../components/Layout";
-import { CardMyFavorite } from "../components/Card";
+import CardNowPlaying, { CardMyFavorite } from "../components/Card";
+import { MovieType } from "../utils/types/movie";
 
-interface DatasType {
-  id: number;
-  title: string;
-  image: string;
+interface PropsType {}
+
+interface StateType {
+  loading: boolean;
+  datas: MovieType[];
 }
 
-export default class ListFavorite extends Component {
-  state = {
-    datas: [],
-    loading: true,
-  };
+export default class ListFavorite extends Component<PropsType, StateType> {
+  constructor(props: PropsType) {
+    super(props);
+    this.state = {
+      datas: [],
+      loading: true,
+    };
+  }
+
   componentDidMount() {
     this.fetchData();
   }
 
   fetchData() {
-    setTimeout(() => {
-      this.setState({
-        datas: [
-          {
-            id: 1,
-            title: "Avengers 1",
-            image: "https://pbs.twimg.com/media/FY-BpW9XwAIXIui.jpg",
-          },
-          {
-            id: 2,
-            title: "Avengers 2",
-            image: "https://pbs.twimg.com/media/FY-BpW9XwAIXIui.jpg",
-          },
-          {
-            id: 3,
-            title: "Avengers 3",
-            image: "https://pbs.twimg.com/media/FY-BpW9XwAIXIui.jpg",
-          },
-          {
-            id: 4,
-            title: "Avengers 4",
-            image: "https://pbs.twimg.com/media/FY-BpW9XwAIXIui.jpg",
-          },
-          {
-            id: 5,
-            title: "Avengers 5",
-            image: "https://pbs.twimg.com/media/FY-BpW9XwAIXIui.jpg",
-          },
-        ],
-        loading: false,
-      });
-    }, 1000);
+    const getFavorite = localStorage.getItem("FavMovie");
+    if (getFavorite) {
+      this.setState({ datas: JSON.parse(getFavorite) });
+    }
+    this.setState({ loading: false });
   }
+
+  removeFavorite(data: MovieType) {
+    /*
+    Menghapus data (object) di dalam sebuah array of object.
+    TODO: Update tampilan ketika data sudah berhasil dihapus
+    TODO: Tambahkan konfirmasi ulang sebelum melakukan penghapusan data untuk mencegah terjadinya salah klik
+    */
+    let dupeDatas: MovieType[] = this.state.datas.slice();
+    const filterData = dupeDatas.filter((item) => item.id !== data.id);
+    localStorage.setItem("FavMovie", JSON.stringify(filterData));
+    alert(`Delete ${data.title} from favorite list`);
+  }
+
   render() {
     return (
       <Layout>
@@ -63,11 +55,14 @@ export default class ListFavorite extends Component {
           {this.state.loading ? (
             <p>Loading...</p>
           ) : (
-            this.state.datas.map((data: DatasType) => (
-              <CardMyFavorite
+            this.state.datas.map((data) => (
+              <CardNowPlaying
                 key={data.id}
                 title={data.title}
-                image={data.image}
+                image={data.poster_path}
+                id={data.id}
+                labelButton="REMOVE FROM FAVORITE"
+                onClickFav={() => this.removeFavorite(data)}
               />
             ))
           )}

@@ -1,7 +1,7 @@
 import { Component, ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string;
+  label?: string;
 }
 
 export class Button extends Component<ButtonProps> {
