@@ -1,14 +1,15 @@
-import { Component, useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "../styles/Detail.css";
 import axios from "axios";
 
 import Layout from "../components/Layout";
 import Card, { CardDetail } from "../components/Card";
-import { SkeletonLoading } from "../components/Loading";
+import SkeletonLoading from "../components/Loading";
 import { MovieType } from "../utils/types/movie";
-import { withRouter } from "../utils/navigation";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
+import { useTitle } from "../utils/hooks/useTitle";
 
 interface DatasType {
   id: number;
@@ -50,24 +51,30 @@ interface StateType {
   videos: VideosType[];
 }
 
-class DetailMovie extends Component<PropsType, StateType> {
-  constructor(props: PropsType) {
-    super(props);
-    this.state = {
-      data: {},
-      datas: [],
-      loading: true,
-      id_movie: 0,
-      videos: [],
-    };
-  }
+const DetailMovie = () => {
+  const { id_movie } = useParams();
+  const [data, setData] = useState<MovieType>({});
+  const [datas, setDatas] = useState<MovieType[]>([]);
+  const [videos, setVideos] = useState<VideosType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useTitle(`${data.title} - Cinephile`);
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  // constructor(props: PropsType) {
+  //   super(props);
+  //   this.state = {
+  //     data: {},
+  //     datas: [],
+  //     loading: true,
+  //     id_movie: 0,
+  //     videos: [],
+  //   };
+  // }
 
-  fetchData() {
-    const { id_movie } = this.props.params;
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
     let nowPlaying = `https://api.themoviedb.org/3/movie/now_playing?api_key=${
       import.meta.env.VITE_API_KEY
     }&language=en-US&page=1`;
@@ -86,20 +93,20 @@ class DetailMovie extends Component<PropsType, StateType> {
           const responseSelectedMovie = responses[1].data;
           const responseSelectedMovieTrailer = responses[1].data.videos.results;
 
-          this.setState({ datas: responseNowPlaying });
-          this.setState({ data: responseSelectedMovie });
-          this.setState({ videos: responseSelectedMovieTrailer });
+          setDatas(responseNowPlaying);
+          setData(responseSelectedMovie);
+          setVideos(responseSelectedMovieTrailer);
         })
       )
       .catch((error) => {
         alert(error.toString());
       })
       .finally(() => {
-        this.setState({ loading: false });
+        setLoading(false);
       });
   }
 
-  handleFavorite(data: MovieType) {
+  function handleFavorite(data: MovieType) {
     const checkExist = localStorage.getItem("FavMovie");
     if (checkExist) {
       let parseFav: MovieType[] = JSON.parse(checkExist);
@@ -111,61 +118,60 @@ class DetailMovie extends Component<PropsType, StateType> {
       alert("Movie added to favorite");
     }
   }
-  render() {
-    return (
-      <Layout>
-        <div
-          className="w-full bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original${this.state.data.backdrop_path})`,
-          }}
-        >
-          <div className="flex justify-center p-28 bg-gradient-to-t from-white  dark:from-black">
-            <CardDetail
-              key={this.state.data.id}
-              title={this.state.data.title}
-              poster_path={this.state.data.poster_path}
-              overview={this.state.data.overview}
-              release_date={this.state.data.release_date}
-              runtime={this.state.data.runtime}
-              genres={this.state.data.genres}
+
+  return (
+    <Layout>
+      <div
+        className="w-full bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,
+        }}
+      >
+        <div className="flex justify-center p-28 bg-gradient-to-t from-white  dark:from-black">
+          <CardDetail
+            key={data.id}
+            title={data.title}
+            poster_path={data.poster_path}
+            overview={data.overview}
+            release_date={data.release_date}
+            runtime={data.runtime}
+            genres={data.genres}
+          />
+        </div>
+      </div>
+      <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
+        {videos.slice(0, 3).map((data, key) => (
+          <div key={key}>
+            <iframe
+              width="100%"
+              height="415"
+              src={`https://www.youtube.com/embed/${data.key}`}
+              title={data.name}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
           </div>
-        </div>
-        <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
-          {this.state.videos.slice(0, 3).map((data, key) => (
-            <div key={key}>
-              <iframe
-                width="100%"
-                height="415"
-                src={`https://www.youtube.com/embed/${data.key}`}
-                title={data.name}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
+        ))}
+      </Carousel>
+      <div className="text-center font-bold text-5xl mt-9">
+        <p>Similar Movie</p>
+      </div>
+      <div className="grid grid-cols-5 gap-4 my-9 mx-28 ">
+        {loading
+          ? [...Array(8).keys()].map((data) => <SkeletonLoading key={data} />)
+          : datas.map((data) => (
+              <Card
+                key={data.id}
+                title={data.title}
+                image={data.poster_path}
+                id={data.id}
+                labelButton="ADD TO FAVORITE"
+                onClickFav={() => handleFavorite(data)}
               />
-            </div>
-          ))}
-        </Carousel>
-        <div className="text-center font-bold text-5xl mt-9">
-          <p>Similar Movie</p>
-        </div>
-        <div className="grid grid-cols-5 gap-4 my-9 mx-28 ">
-          {this.state.loading
-            ? [...Array(8).keys()].map((data) => <SkeletonLoading key={data} />)
-            : this.state.datas.map((data) => (
-                <Card
-                  key={data.id}
-                  title={data.title}
-                  image={data.poster_path}
-                  id={data.id}
-                  labelButton="ADD TO FAVORITE"
-                  onClickFav={() => this.handleFavorite(data)}
-                />
-              ))}
-        </div>
-      </Layout>
-    );
-  }
-}
+            ))}
+      </div>
+    </Layout>
+  );
+};
 
-export default withRouter(DetailMovie);
+export default DetailMovie;

@@ -1,37 +1,36 @@
-import { Component, useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/Homepage.css";
 import axios from "axios";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
-import { SkeletonLoading } from "../components/Loading";
+import SkeletonLoading from "../components/Loading";
 import { MovieType } from "../utils/types/movie";
 import { Carousel } from "react-responsive-carousel";
+import { useTitle } from "../utils/hooks/useTitle";
 
-interface PropsType {}
+const Homepage = () => {
+  useTitle("YMovies! - Now Playing Movie");
+  const [datas, setDatas] = useState<MovieType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(1);
 
-interface StateType {
-  loading: boolean;
-  datas: MovieType[];
-  page: number;
-  totalPage: number;
-}
+  // this.state = {
+  //   datas: [],
+  //   loading: true,
+  //   page: 1,
+  //   totalPage: 1,
+  // };
 
-export default class Homepage extends Component<PropsType, StateType> {
-  constructor(props: PropsType) {
-    super(props);
-    this.state = {
-      datas: [],
-      loading: true,
-      page: 1,
-      totalPage: 1,
-    };
-  }
+  useEffect(() => {
+    fetchData(1);
+  }, []);
 
-  componentDidMount() {
-    this.fetchData(1);
-  }
+  // componentDidMount() {
+  //   this.fetchData(1);
+  // }
 
-  fetchData(page: number) {
+  function fetchData(page: number) {
     axios
       .get(
         `https://api.themoviedb.org/3/movie/now_playing?api_key=${
@@ -40,29 +39,30 @@ export default class Homepage extends Component<PropsType, StateType> {
       )
       .then((data) => {
         const { results, total_pages } = data.data;
-        this.setState({ datas: results, totalPage: total_pages });
+        setDatas(results);
+        setTotalPage(total_pages);
       })
       .catch((error) => {
         alert(error.toString());
       })
       .finally(() => {
-        this.setState({ loading: false });
+        setLoading(false);
       });
   }
 
-  nextPage() {
-    const newPage = this.state.page + 1;
-    this.setState({ page: newPage });
-    this.fetchData(newPage);
+  function nextPage() {
+    const newPage = page + 1;
+    setPage(newPage);
+    fetchData(newPage);
   }
 
-  prevPage() {
-    const newPage = this.state.page - 1;
-    this.setState({ page: newPage });
-    this.fetchData(newPage);
+  function prevPage() {
+    const newPage = page - 1;
+    setPage(newPage);
+    fetchData(newPage);
   }
 
-  handleFavorite(data: MovieType) {
+  function handleFavorite(data: MovieType) {
     const checkExist = localStorage.getItem("FavMovie");
     if (checkExist) {
       let parseFav: MovieType[] = JSON.parse(checkExist);
@@ -81,61 +81,59 @@ export default class Homepage extends Component<PropsType, StateType> {
     }
   }
 
-  render() {
-    return (
-      <Layout>
-        <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
-          {this.state.datas.slice(0, 5).map((data, key) => (
-            <div key={key}>
-              <img
-                className="relative"
-                style={{ filter: "brightness(50%)" }}
-                src={`https://image.tmdb.org/t/p/original${data.backdrop_path}`}
-                alt=""
-              />
-              <div className="absolute h-full w-full left-auto top-1/3 text-7xl align-middle font-bold tracking-wider">
-                {data.title}
-              </div>
+  return (
+    <Layout>
+      <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
+        {datas.slice(0, 5).map((data, key) => (
+          <div key={key}>
+            <img
+              className="relative"
+              style={{ filter: "brightness(50%)" }}
+              src={`https://image.tmdb.org/t/p/original${data.backdrop_path}`}
+              alt=""
+            />
+            <div className="absolute h-full w-full left-auto top-1/3 text-7xl align-middle font-bold tracking-wider">
+              {data.title}
             </div>
-          ))}
-        </Carousel>
-        <div className="text-center font-bold text-5xl mt-9">
-          <p>Now Playing</p>
-        </div>
-        <div className="grid grid-cols-5 gap-4 my-9 mx-28">
-          {this.state.loading
-            ? [...Array(20).keys()].map((data) => (
-                <SkeletonLoading key={data} />
-              ))
-            : this.state.datas.map((data) => (
-                <Card
-                  key={data.id}
-                  title={data.title}
-                  image={data.poster_path}
-                  id={data.id}
-                  labelButton="ADD TO FAVORITE"
-                  onClickFav={() => this.handleFavorite(data)}
-                />
-              ))}
-        </div>
-        <div className="btn-group w-full justify-center">
-          <button
-            className="btn"
-            onClick={() => this.prevPage()}
-            disabled={this.state.page === 1}
-          >
-            «
-          </button>
-          <button className="btn">{this.state.page}</button>
-          <button
-            className="btn"
-            onClick={() => this.nextPage()}
-            disabled={this.state.page === this.state.totalPage}
-          >
-            »
-          </button>
-        </div>
-      </Layout>
-    );
-  }
-}
+          </div>
+        ))}
+      </Carousel>
+      <div className="text-center font-bold text-5xl mt-9">
+        <p>Now Playing</p>
+      </div>
+      <div className="grid grid-cols-5 gap-4 my-9 mx-28">
+        {loading
+          ? [...Array(20).keys()].map((data) => <SkeletonLoading key={data} />)
+          : datas.map((data) => (
+              <Card
+                key={data.id}
+                title={data.title}
+                image={data.poster_path}
+                id={data.id}
+                labelButton="ADD TO FAVORITE"
+                onClickFav={() => handleFavorite(data)}
+              />
+            ))}
+      </div>
+      <div className="btn-group w-full justify-center">
+        <button
+          className="btn"
+          onClick={() => prevPage()}
+          disabled={page === 1}
+        >
+          «
+        </button>
+        <button className="btn">{page}</button>
+        <button
+          className="btn"
+          onClick={() => nextPage()}
+          disabled={page === totalPage}
+        >
+          »
+        </button>
+      </div>
+    </Layout>
+  );
+};
+
+export default Homepage;

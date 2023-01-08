@@ -1,24 +1,23 @@
-import React, { Component } from "react";
-
-import Navbar from "./Navbar";
+import React, { Component, FC } from "react";
 import Footer from "./Footer";
+import Navbar from "./Navbar";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default class Layout extends Component<LayoutProps> {
-  render() {
-    return (
-      <div className="w-full h-screen bg-[#181D31] flex flex-col overflow-auto">
-        <Navbar />
+const Layout: FC<LayoutProps> = ({ children }) => {
+  return (
+    <div className="w-full h-screen bg-[#181D31] flex flex-col overflow-auto">
+      <Navbar />
 
-        <div className="h-full overflow-auto">
-          {this.props.children}
+      <div className="h-full overflow-auto">
+        {children}
 
-          <Footer />
-        </div>
+        <Footer />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default Layout;
