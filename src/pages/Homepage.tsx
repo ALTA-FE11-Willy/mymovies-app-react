@@ -2,11 +2,20 @@ import { useState, useEffect } from "react";
 import "../styles/Homepage.css";
 import axios from "axios";
 import Layout from "../components/Layout";
-import Card from "../components/Card";
+import Card, { CardUpcoming } from "../components/Card";
 import SkeletonLoading from "../components/Loading";
 import { MovieType } from "../utils/types/movie";
 import { Carousel } from "react-responsive-carousel";
 import { useTitle } from "../utils/hooks/useTitle";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+// import required modules
+import { Pagination, Navigation } from "swiper";
 
 const Homepage = () => {
   useTitle("YMovies! - Now Playing Movie");
@@ -14,6 +23,7 @@ const Homepage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(1);
+  const [upcoming, setUpcoming] = useState<MovieType[]>([]);
 
   // this.state = {
   //   datas: [],
@@ -24,6 +34,7 @@ const Homepage = () => {
 
   useEffect(() => {
     fetchData(1);
+    // fetchUpcomingMovies(1);
   }, []);
 
   // componentDidMount() {
@@ -41,6 +52,41 @@ const Homepage = () => {
         const { results, total_pages } = data.data;
         setDatas(results);
         setTotalPage(total_pages);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    axios
+      .get(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${
+          import.meta.env.VITE_API_KEY
+        }&language=en-US&page=${page}`
+      )
+      .then((data) => {
+        const { results } = data.data;
+        setUpcoming(results);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  function fetchUpcomingMovies(page: number) {
+    axios
+      .get(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${
+          import.meta.env.VITE_API_KEY
+        }&language=en-US&page=${page}`
+      )
+      .then((data) => {
+        const { results } = data.data;
+        setUpcoming(results);
       })
       .catch((error) => {
         alert(error.toString());
@@ -98,6 +144,38 @@ const Homepage = () => {
           </div>
         ))}
       </Carousel>
+      <div className="text-center font-bold text-5xl mt-9">
+        <p>Upcoming</p>
+      </div>
+      <div className="my-9 mx-28">
+        <Swiper
+          slidesPerView={3}
+          spaceBetween={30}
+          slidesPerGroup={3}
+          loop={false}
+          loopFillGroupWithBlank={true}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Pagination, Navigation]}
+          className="mySwiper"
+        >
+          {loading
+            ? [...Array(3).keys()].map((data) => <SkeletonLoading key={data} />)
+            : upcoming.slice(0, 9).map((data) => (
+                <SwiperSlide key={data.id} className="mb-10">
+                  <CardUpcoming
+                    title={data.title}
+                    image={data.poster_path}
+                    id={data.id}
+                    labelButton="ADD TO FAVORITE"
+                    onClickFav={() => handleFavorite(data)}
+                  />
+                </SwiperSlide>
+              ))}
+        </Swiper>
+      </div>
       <div className="text-center font-bold text-5xl mt-9">
         <p>Now Playing</p>
       </div>

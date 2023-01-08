@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { FC, Component } from "react";
 import Button from "./Button";
 import moment from "moment";
-import { withRouter } from "../utils/navigation";
 
 type GenreType = {
   id: number;
@@ -84,6 +83,45 @@ export const CardMyFavorite: FC<CardProps> = ({
             label={labelButton}
             onClick={onClickFav}
           ></Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CardUpcoming: FC<CardProps> = ({
+  id,
+  image,
+  title,
+  labelButton,
+  onClickFav,
+}) => {
+  const navigate = useNavigate();
+
+  function onClickDetail() {
+    navigate(`/movie/${id}`);
+  }
+
+  return (
+    <div className="card card-compact  bg-base-100 shadow-xl">
+      <figure onClick={() => onClickDetail()} className="w-full">
+        <img
+          className="h-72 w-full object-none"
+          src={`https://image.tmdb.org/t/p/w500${image}`}
+          alt={title}
+        />
+      </figure>
+      <div className="card-body justify-between">
+        <h2
+          className="card-title justify-center text-center"
+          onClick={() => onClickDetail()}
+        >
+          {" "}
+          {title}
+        </h2>
+
+        <div className="card-actions w-full justify-center">
+          <Button label={labelButton} onClick={onClickFav} />
         </div>
       </div>
     </div>
