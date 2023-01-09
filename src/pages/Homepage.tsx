@@ -198,17 +198,13 @@ const Homepage = () => {
           className="btn"
           onClick={() => prevPage()}
           disabled={page === 1}
-        >
-          «
-        </button>
+        ></button>
         <button className="btn">{page}</button>
         <button
           className="btn"
           onClick={() => nextPage()}
           disabled={page === totalPage}
-        >
-          »
-        </button>
+        ></button>
       </div>
     </Layout>
   );

@@ -58,6 +58,7 @@ const DetailMovie = () => {
   const [videos, setVideos] = useState<VideosType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   useTitle(`${data.title} - Cinephile`);
+  const element = document.getElementById("head");
 
   // constructor(props: PropsType) {
   //   super(props);
@@ -72,7 +73,12 @@ const DetailMovie = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    element?.scrollIntoView({ behavior: "smooth" });
+  }, [id_movie]);
+
+  // useEffect(() => {
+  //   id_movie;
+  // }, [id_movie]);
 
   function fetchData() {
     let nowPlaying = `https://api.themoviedb.org/3/movie/now_playing?api_key=${
@@ -122,6 +128,7 @@ const DetailMovie = () => {
   return (
     <Layout>
       <div
+        id="head"
         className="w-full bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,

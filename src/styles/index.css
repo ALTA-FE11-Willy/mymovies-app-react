@@ -7,6 +7,29 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+::-webkit-scrollbar {
+  border-radius: 9999px;
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 9999px;
+  background: #181d31;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 9999px;
+  background: #555;
+}
+
 * {
   /* font-family: "Bebas Neue"; */
   /* color: #f0e9d2; */

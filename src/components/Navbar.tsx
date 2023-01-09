@@ -1,9 +1,18 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import Button from "./Button";
+import { ThemeContext } from "../utils/context";
+import { useContext } from "react";
 
 const Navbar = () => {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  function handleTheme() {
+    theme === "light" ? setTheme("dark") : setTheme("light");
+  }
+
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-white dark:bg-[#181D31] ">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -24,6 +33,10 @@ const Navbar = () => {
           YMovie!
         </Link>
       </div>
+      <div>
+        <Button label="theme" onClick={() => handleTheme()}></Button>
+      </div>
+
       <div className="flex-none gap-2">
         <div className="form-control">
           <input
