@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "../styles/Detail.css";
+import "styles/Detail.css";
 import axios from "axios";
 
-import Layout from "../components/Layout";
-import Card, { CardDetail } from "../components/Card";
-import SkeletonLoading from "../components/Loading";
-import { MovieType } from "../utils/types/movie";
+import Layout from "components/Layout";
+import Card, { CardDetail } from "components/Card";
+import SkeletonLoading from "components/Loading";
+import { MovieType } from "utils/types/movie";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import { useTitle } from "../utils/hooks/useTitle";
+import { useTitle } from "utils/hooks/useTitle";
 
 interface DatasType {
   id: number;
@@ -114,9 +114,16 @@ const DetailMovie = () => {
 
   function handleFavorite(data: MovieType) {
     const checkExist = localStorage.getItem("FavMovie");
+
     if (checkExist) {
       let parseFav: MovieType[] = JSON.parse(checkExist);
+      let exist = parseFav.filter((clicked) => clicked.id === data.id);
+      let inExist = exist[0];
 
+      if (inExist !== undefined) {
+        alert("Movie already added in favorite");
+        return;
+      }
       parseFav.push(data);
       localStorage.setItem("FavMovie", JSON.stringify(parseFav));
     } else {

@@ -1,10 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Component, useState, useMemo, useEffect } from "react";
-import Homepage from "../pages/Homepage";
-import DetailMovie from "../pages/DetailMovie";
-import ListFavorite from "../pages/ListFavorite";
+import { useDispatch } from "react-redux/es/exports";
+import Homepage from "pages/Homepage";
+import DetailMovie from "pages/DetailMovie";
+import ListFavorite from "pages/ListFavorite";
 
-import { ThemeContext } from "../utils/context";
+import { ThemeContext } from "utils/context";
+import { setFavorites } from "utils/redux/reducers/reducer";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const dispatch = useDispatch();
   const [theme, setTheme] = useState("dark");
   const background = useMemo(() => ({ theme, setTheme }), [theme]);
 
@@ -32,6 +35,13 @@ const App = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [theme]);
+
+  useEffect(() => {
+    const getFavMovies = localStorage.getItem("FavMovie");
+    if (getFavMovies) {
+      dispatch(setFavorites(JSON.parse(getFavMovies)));
+    }
+  }, []);
 
   return (
     <ThemeContext.Provider value={background}>

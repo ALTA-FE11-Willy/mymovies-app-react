@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import "../styles/Homepage.css";
+import "styles/Homepage.css";
 import axios from "axios";
-import Layout from "../components/Layout";
-import Card, { CardUpcoming } from "../components/Card";
-import SkeletonLoading from "../components/Loading";
-import { MovieType } from "../utils/types/movie";
+import Layout from "components/Layout";
+import Card, { CardUpcoming } from "components/Card";
+import SkeletonLoading from "components/Loading";
+import { MovieType } from "utils/types/movie";
 import { Carousel } from "react-responsive-carousel";
-import { useTitle } from "../utils/hooks/useTitle";
+import { useTitle } from "utils/hooks/useTitle";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -16,6 +16,10 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Pagination, Navigation } from "swiper";
+
+//1.library
+//2.component
+//3.fungsi pembentu
 
 const Homepage = () => {
   useTitle("YMovies! - Now Playing Movie");
@@ -110,6 +114,7 @@ const Homepage = () => {
 
   function handleFavorite(data: MovieType) {
     const checkExist = localStorage.getItem("FavMovie");
+
     if (checkExist) {
       let parseFav: MovieType[] = JSON.parse(checkExist);
       let exist = parseFav.filter((clicked) => clicked.id === data.id);

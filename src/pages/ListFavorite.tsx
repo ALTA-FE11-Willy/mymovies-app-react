@@ -1,10 +1,13 @@
+import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import "../styles/ListFavorite.css";
+import "styles/ListFavorite.css";
 
-import Layout from "../components/Layout";
-import CardNowPlaying from "../components/Card";
-import { MovieType } from "../utils/types/movie";
-import { useTitle } from "../utils/hooks/useTitle";
+import Layout from "components/Layout";
+import CardNowPlaying from "components/Card";
+import { MovieType } from "utils/types/movie";
+import { useTitle } from "utils/hooks/useTitle";
+import { RootState } from "utils/types/redux";
+import { setFavorites } from "utils/redux/reducers/reducer";
 
 interface PropsType {}
 
@@ -14,9 +17,11 @@ interface StateType {
 }
 
 const ListFavorite = () => {
-  useTitle("YMovies! - Your Favorite Movie");
-  const [datas, setDatas] = useState<MovieType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
+  useTitle("Cinephile - Your Favorite Movie");
+  const datas = useSelector((state: RootState) => state.data.favorites);
+  // const [datass, setDatass] = useState<MovieType[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
   // constructor(props: PropsType) {
   //   super(props);
   //   this.state = {
@@ -25,17 +30,17 @@ const ListFavorite = () => {
   //   };
   // }
 
-  useEffect(() => {
-    fetchData();
-  }, [0]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [0]);
 
-  function fetchData() {
-    const getFavorite = localStorage.getItem("FavMovie");
-    if (getFavorite) {
-      setDatas(JSON.parse(getFavorite));
-    }
-    setLoading(false);
-  }
+  // function fetchData() {
+  //   const getFavorite = localStorage.getItem("FavMovie");
+  //   if (getFavorite) {
+  //     setDatas(JSON.parse(getFavorite));
+  //   }
+  //   setLoading(false);
+  // }
 
   function removeFavorite(data: MovieType) {
     /*
@@ -46,6 +51,7 @@ const ListFavorite = () => {
     let dupeDatas: MovieType[] = datas.slice();
     const filterData = dupeDatas.filter((item) => item.id !== data.id);
     localStorage.setItem("FavMovie", JSON.stringify(filterData));
+    dispatch(setFavorites(filterData));
     alert(`Delete ${data.title} from favorite list`);
   }
 
@@ -55,20 +61,16 @@ const ListFavorite = () => {
         <p>My Favorite</p>
       </div>
       <div className="grid grid-cols-5 gap-4 my-9 mx-28">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          datas.map((data) => (
-            <CardNowPlaying
-              key={data.id}
-              title={data.title}
-              image={data.poster_path}
-              id={data.id}
-              labelButton="REMOVE FROM FAVORITE"
-              onClickFav={() => removeFavorite(data)}
-            />
-          ))
-        )}
+        {datas.map((data) => (
+          <CardNowPlaying
+            key={data.id}
+            title={data.title}
+            image={data.poster_path}
+            id={data.id}
+            labelButton="REMOVE FROM FAVORITE"
+            onClickFav={() => removeFavorite(data)}
+          />
+        ))}
       </div>
     </Layout>
   );
