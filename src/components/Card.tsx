@@ -30,13 +30,13 @@ const Card: FC<CardProps> = ({ id, image, title, labelButton, onClickFav }) => {
   }
 
   return (
-    <div className="card card-compact  bg-base-100 shadow-xl  hover:scale-105 hover:z-10 duration-300 ">
-      <figure onClick={() => onClickDetail()}>
+    <div className="card card-compact  bg-[#393E46] shadow-xl  hover:scale-105 hover:z-10 duration-300 ">
+      <figure onClick={() => onClickDetail()} className="cursor-pointer">
         <img src={`https://image.tmdb.org/t/p/w500${image}`} alt={title} />
       </figure>
       <div className="card-body justify-between">
         <h2
-          className="card-title justify-center text-center"
+          className="card-title justify-center text-center cursor-pointer"
           onClick={() => onClickDetail()}
         >
           {" "}
@@ -65,13 +65,13 @@ export const CardMyFavorite: FC<CardProps> = ({
   }
 
   return (
-    <div className="card card-compact  bg-base-100 shadow-xl ">
-      <figure onClick={() => onClickDetail()}>
+    <div className="card card-compact  bg-[#393E46]  shadow-xl ">
+      <figure onClick={() => onClickDetail()} className="cursor-pointer">
         <img src={`https://image.tmdb.org/t/p/w500${image}`} alt={title} />
       </figure>
       <div className="card-body ">
         <h2
-          className="card-title justify-center"
+          className="card-title justify-center cursor-pointer"
           onClick={() => onClickDetail()}
         >
           {" "}
@@ -103,17 +103,17 @@ export const CardUpcoming: FC<CardProps> = ({
   }
 
   return (
-    <div className="card card-compact  bg-base-100 shadow-xl">
-      <figure onClick={() => onClickDetail()} className="w-full">
+    <div className="card card-compact  bg-[#393E46] shadow-xl">
+      <figure onClick={() => onClickDetail()} className="w-full cursor-pointer">
         <img
           className="h-72 w-full object-none"
           src={`https://image.tmdb.org/t/p/w500${image}`}
           alt={title}
         />
       </figure>
-      <div className="card-body justify-between">
+      <div className="card-body justify-between ">
         <h2
-          className="card-title justify-center text-center"
+          className="card-title justify-center text-center cursor-pointer"
           onClick={() => onClickDetail()}
         >
           {" "}
@@ -141,17 +141,17 @@ export const CardDetail: FC<CardProps> = ({
   poster_path,
 }) => {
   return (
-    <div className="card lg:card-side glass shadow-xl px-16 py-16 ">
-      <figure className="w-1/2">
+    <div className="card lg:card-side glass shadow-xl px-16 py-16 text-[#393E46] dark:text-[#f0e9d2] items-center">
+      <figure className="lg:w-[25%]">
         <img
-          className=" "
+          className="pb-4 lg:p-0"
           src={`https://image.tmdb.org/t/p/w342${poster_path}`}
           alt={title}
         />
       </figure>
-      <div className="flex flex-col ml-9 h-full  justify-between">
+      <div className="flex flex-col lg:ml-9 justify-between lg:w-[75%]">
         <div className="text-lg ">
-          <h3 className="card-title  justify-center font-extrabold slice text-3xl  mb-5">
+          <h3 className="card-title  justify-center font-extrabold slice text-3xl  mb-5 text-center">
             {title}
           </h3>
           <p>
@@ -181,7 +181,7 @@ export const CardDetail: FC<CardProps> = ({
           </p>
         </div>
         <div className="card-actions justify-end ">
-          <button className="btn btn-primary">Watch Now</button>
+          <button className="btn bg-[#678983]">Watch Now</button>
         </div>
       </div>
     </div>

@@ -141,7 +141,7 @@ const DetailMovie = () => {
           backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,
         }}
       >
-        <div className="flex justify-center p-28 bg-gradient-to-t from-white  dark:from-black">
+        <div className="flex justify-center  items-center  p-4 md:p-14 lg:p-28 bg-gradient-to-t from-white  dark:from-black">
           <CardDetail
             key={data.id}
             title={data.title}
@@ -170,7 +170,7 @@ const DetailMovie = () => {
       <div className="text-center font-bold text-5xl mt-9">
         <p>Similar Movie</p>
       </div>
-      <div className="grid grid-cols-5 gap-4 my-9 mx-28 ">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28">
         {loading
           ? [...Array(8).keys()].map((data) => <SkeletonLoading key={data} />)
           : datas.map((data) => (

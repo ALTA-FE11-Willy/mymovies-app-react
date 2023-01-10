@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 const Footer = () => {
   return (
-    <footer className=" footer items-center p-4 bg-white dark:bg-[#181D31] ">
+    <footer className=" footer items-center p-4 bg-[#EEEEEE] dark:bg-[#222831] text-[#393E46] dark:text-[#f0e9d2] border-t border-[#ddd] dark:border-[#393E46] shadow-inner">
       <div className="items-center grid-flow-col">
         <svg
           width="36"
@@ -18,7 +18,7 @@ const Footer = () => {
         <p>Copyright © 2023</p>
         <p>All right reserved by YMovie!</p>
       </div>
-      <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+      <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end hidden md:flex">
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"

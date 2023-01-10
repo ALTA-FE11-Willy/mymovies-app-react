@@ -16,6 +16,7 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Pagination, Navigation } from "swiper";
+import { useNavigate } from "react-router-dom";
 
 //1.library
 //2.component
@@ -28,6 +29,7 @@ const Homepage = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [upcoming, setUpcoming] = useState<MovieType[]>([]);
+  const navigate = useNavigate();
 
   // this.state = {
   //   datas: [],
@@ -134,9 +136,20 @@ const Homepage = () => {
 
   return (
     <Layout>
-      <Carousel showStatus={false} showIndicators={false} showThumbs={false}>
+      <Carousel
+        autoPlay={true}
+        showStatus={false}
+        showIndicators={false}
+        showThumbs={false}
+      >
         {datas.slice(0, 5).map((data, key) => (
-          <div key={key}>
+          <div
+            key={key}
+            className="cursor-pointer"
+            onClick={() => {
+              navigate(`/movie/${data.id}`);
+            }}
+          >
             <img
               className="relative"
               style={{ filter: "brightness(50%)" }}
@@ -152,7 +165,7 @@ const Homepage = () => {
       <div className="text-center font-bold text-5xl mt-9">
         <p>Upcoming</p>
       </div>
-      <div className="my-9 mx-28">
+      <div className="my-9 mx-4 md:mx-16 lg:mx-28">
         <Swiper
           slidesPerView={3}
           spaceBetween={30}
@@ -184,7 +197,7 @@ const Homepage = () => {
       <div className="text-center font-bold text-5xl mt-9">
         <p>Now Playing</p>
       </div>
-      <div className="grid grid-cols-5 gap-4 my-9 mx-28">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28">
         {loading
           ? [...Array(20).keys()].map((data) => <SkeletonLoading key={data} />)
           : datas.map((data) => (
@@ -203,13 +216,17 @@ const Homepage = () => {
           className="btn"
           onClick={() => prevPage()}
           disabled={page === 1}
-        ></button>
+        >
+          ←
+        </button>
         <button className="btn">{page}</button>
         <button
           className="btn"
           onClick={() => nextPage()}
           disabled={page === totalPage}
-        ></button>
+        >
+          →
+        </button>
       </div>
     </Layout>
   );

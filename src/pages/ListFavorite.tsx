@@ -57,20 +57,22 @@ const ListFavorite = () => {
 
   return (
     <Layout>
-      <div className="text-center font-bold text-5xl mt-9">
-        <p>My Favorite</p>
-      </div>
-      <div className="grid grid-cols-5 gap-4 my-9 mx-28">
-        {datas.map((data) => (
-          <CardNowPlaying
-            key={data.id}
-            title={data.title}
-            image={data.poster_path}
-            id={data.id}
-            labelButton="REMOVE FROM FAVORITE"
-            onClickFav={() => removeFavorite(data)}
-          />
-        ))}
+      <div className="h-full">
+        <div className="text-center font-bold text-5xl mt-9">
+          <p>My Favorite</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28">
+          {datas.map((data) => (
+            <CardNowPlaying
+              key={data.id}
+              title={data.title}
+              image={data.poster_path}
+              id={data.id}
+              labelButton="REMOVE FROM FAVORITE"
+              onClickFav={() => removeFavorite(data)}
+            />
+          ))}
+        </div>
       </div>
     </Layout>
   );

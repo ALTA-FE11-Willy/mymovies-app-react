@@ -7,6 +7,7 @@ import ListFavorite from "pages/ListFavorite";
 
 import { ThemeContext } from "utils/context";
 import { setFavorites } from "utils/redux/reducers/reducer";
+import Todo from "pages/Todo";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/favorites",
     element: <ListFavorite />,
+  },
+  {
+    path: "/todo",
+    element: <Todo />,
   },
 ]);
 
