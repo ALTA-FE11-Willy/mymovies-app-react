@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="flex-1 text-[#393E46] dark:text-[#f0e9d2]">
         <Link
           to="/"
-          className="btn btn-ghost normal-case text-xl hidden md:flex"
+          className="btn btn-ghost normal-case text-4xl hidden md:flex"
         >
           YMovie!
         </Link>
@@ -40,7 +40,7 @@ const Navbar = () => {
           to="/favorites"
           className="btn btn-ghost normal-case text-xl hidden md:flex"
         >
-          Favorite
+          Favorites
         </Link>
       </div>
 
