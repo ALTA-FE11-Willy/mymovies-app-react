@@ -156,13 +156,13 @@ const Homepage = () => {
               src={`https://image.tmdb.org/t/p/original${data.backdrop_path}`}
               alt=""
             />
-            <div className="absolute h-full w-full left-auto top-1/3 text-7xl align-middle font-bold tracking-wider">
+            <div className="absolute h-full w-full left-auto top-1/3 text-2xl md:text-4xl lg:text-7xl align-middle font-bold tracking-wider">
               {data.title}
             </div>
           </div>
         ))}
       </Carousel>
-      <div className="text-center font-bold text-5xl mt-9">
+      <div className="text-center font-bold text-3xl md:text-4xl lg:text-5xl mt-9">
         <p>Upcoming</p>
       </div>
       <div className="my-9 mx-4 md:mx-16 lg:mx-28">
@@ -194,7 +194,7 @@ const Homepage = () => {
               ))}
         </Swiper>
       </div>
-      <div className="text-center font-bold text-5xl mt-9">
+      <div className="text-center font-bold text-3xl md:text-4xl lg:text-5xl mt-9">
         <p>Now Playing</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28">
