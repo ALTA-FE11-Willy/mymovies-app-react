@@ -32,6 +32,12 @@ const Navbar = () => {
         <Link to="/" className="btn btn-ghost normal-case text-xl">
           YMovie!
         </Link>
+        <Link
+          to="/favorites"
+          className="btn btn-ghost normal-case text-xl text-black dark:text-white"
+        >
+          Favorite
+        </Link>
       </div>
       <div>
         <Button label="theme" onClick={() => handleTheme()}></Button>
