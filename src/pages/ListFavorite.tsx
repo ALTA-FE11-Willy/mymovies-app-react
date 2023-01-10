@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import "styles/ListFavorite.css";
 
 import Layout from "components/Layout";
-import CardNowPlaying from "components/Card";
+import Card, { CardMyFavorite } from "components/Card";
 import { MovieType } from "utils/types/movie";
 import { useTitle } from "utils/hooks/useTitle";
 import { RootState } from "utils/types/redux";
 import { setFavorites } from "utils/redux/reducers/reducer";
+import { ModalDeleteFav } from "components/Modal";
 
 interface PropsType {}
 
@@ -52,25 +53,25 @@ const ListFavorite = () => {
     const filterData = dupeDatas.filter((item) => item.id !== data.id);
     localStorage.setItem("FavMovie", JSON.stringify(filterData));
     dispatch(setFavorites(filterData));
-    alert(`Delete ${data.title} from favorite list`);
   }
 
   return (
     <Layout>
-      <div className="h-full">
+      <div className="">
         <div className="text-center font-bold text-5xl mt-9">
           <p>My Favorite</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-9 mx-4 md:mx-16 lg:mx-28 ">
           {datas.map((data) => (
-            <CardNowPlaying
-              key={data.id}
-              title={data.title}
-              image={data.poster_path}
-              id={data.id}
-              labelButton="REMOVE FROM FAVORITE"
-              onClickFav={() => removeFavorite(data)}
-            />
+            <div>
+              <CardMyFavorite
+                key={data.id}
+                title={data.title}
+                image={data.poster_path}
+                id={data.id}
+              />
+              <ModalDeleteFav onClickFav={() => removeFavorite(data)} />
+            </div>
           ))}
         </div>
       </div>

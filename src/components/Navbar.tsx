@@ -77,6 +77,11 @@ const Navbar = () => {
               </a>
             </li>
             <li>
+              <Link to="/favorites">
+                <a>Favorites</a>
+              </Link>
+            </li>
+            <li>
               <a>Settings</a>
             </li>
             <li>

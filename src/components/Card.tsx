@@ -65,24 +65,23 @@ export const CardMyFavorite: FC<CardProps> = ({
   }
 
   return (
-    <div className="card card-compact  bg-[#393E46]  shadow-xl ">
+    <div className="card card-compact  bg-[#393E46] shadow-xl  hover:scale-105 hover:z-10 duration-300 ">
       <figure onClick={() => onClickDetail()} className="cursor-pointer">
         <img src={`https://image.tmdb.org/t/p/w500${image}`} alt={title} />
       </figure>
-      <div className="card-body ">
+      <div className="card-body justify-between">
         <h2
-          className="card-title justify-center cursor-pointer"
+          className="card-title justify-center text-center cursor-pointer"
           onClick={() => onClickDetail()}
         >
           {" "}
           {title}
         </h2>
-        <div className="card-actions justify-end">
-          <Button
-            className="btn  text-[#f0e9d2]"
-            label={labelButton}
-            onClick={onClickFav}
-          ></Button>
+
+        <div className="card-actions w-full justify-center">
+          <label htmlFor="my-modal" className="btn bg-red-700">
+            REMOVE FROM FAVORITE
+          </label>
         </div>
       </div>
     </div>
